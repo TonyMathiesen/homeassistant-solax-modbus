@@ -1691,7 +1691,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         icon = "mdi:battery-arrow-down",
     ),
     GrowattModbusSensorEntityDescription( # to refresh number entity
-        name = "EMS Discharging Stop SOC",
+        name = "EMS Discharging Stop SOC (off grid)",
         key = "ems_discharging_stop_soc",
         register = 3037,
         native_unit_of_measurement = PERCENTAGE,
