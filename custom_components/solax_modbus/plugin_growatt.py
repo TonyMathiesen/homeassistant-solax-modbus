@@ -124,7 +124,7 @@ def value_function_time_slot_1(initval, descr, datadict):
             ('time_1_end', time_1_end),
         ]
     else:
-        _LOGGER.error(f"{hub.name}: Time 1 Start cannot be smaller than Time 1 End")
+        _LOGGER.error(f"Growatt: Time 1 Start cannot be smaller than Time 1 End")
     #function end
 
 def value_function_today_s_solar_energy(initval, descr, datadict):
