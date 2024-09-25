@@ -117,14 +117,14 @@ def value_function_time_slot_1(initval, descr, datadict):
         time_1_start += 16384
 
     # Check if end is larger than start or 
-    if (time_to_int(datadict.get('time_1_end', '00:00')) > time_to_int(datadict.get('time_1_start', '00:00'))) or (time_1_start == 0 and time_to_int(datadict.get('time_1_end', '00:00')) == 0)
+    if (time_to_int(datadict.get('time_1_end', '00:00')) > time_to_int(datadict.get('time_1_start', '00:00'))) or (time_1_start == 0 and time_to_int(datadict.get('time_1_end', '00:00')) == 0):
         # Return the updated values for time_1_start and time_1_end
         return [
             (REGISTER_U16, time_1_start),
             ('time_1_end', time_1_end),
         ]
-    else
-        _LOGGER.error(f"Time 1 Start cannot be greater than Time 1 End")
+    else:
+        _LOGGER.error(f"{hub.name}: Time 1 Start cannot be smaller than Time 1 End")
     #function end
 
 def value_function_today_s_solar_energy(initval, descr, datadict):
