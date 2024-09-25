@@ -4471,7 +4471,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
     ),
     GrowattModbusSensorEntityDescription(
         name = "Time 1 End",
-        key = "time_1_end_read",
+        key = "time_1_end",
         register = 3039, #TL-XH GEN3 load/battery/grid first priority
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
