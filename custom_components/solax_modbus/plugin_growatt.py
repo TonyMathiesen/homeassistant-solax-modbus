@@ -112,7 +112,7 @@ def value_function_time_slot_1(initval, descr, datadict):
 
     # Return the updated values for time_1_start and time_1_end
     return [
-        ('time_1_start', time_1_start),
+        (REGISTER_U16, 2),
         ('time_1_end', time_1_end),
     ]
 
@@ -909,8 +909,8 @@ SELECT_TYPES = [
         icon = "mdi:battery-clock",
     ),
     GrowattModbusSelectEntityDescription(
-        name = "Time 1-c End",
-        key = "time_1_end",
+        name = "Time 1-d Mode",
+        key = "time_1_mode",
         option_dict = {
                 0: "Disabled",
                 1: "Enabled",
