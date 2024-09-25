@@ -97,22 +97,28 @@ class GrowattModbusSensorEntityDescription(BaseModbusSensorEntityDescription):
 # ====================================== Computed value functions  =================================================
 
 def value_function_time_slot_1(initval, descr, datadict):
-    # Get the values from datadict
-    time_1_start = datadict.get('time_1_start', 0)
+    def time_to_int(time_str):
+        hours, minutes = map(int, time_str.split(':'))
+        return (hours * 256) + minutes
+
+    time_1_start = time_to_int(datadict.get('time_1_start', '00:00'))
     time_1_end = datadict.get('time_1_end', 0)
-    time_1_enabled = datadict.get('time_1_enabled', 0)  # Default to 0 if not found
-    time_1_mode = datadict.get('time_1_mode', 0)  # Default to 0 if not found
+    time_1_enabled = datadict.get('time_1_enabled', 'Disabled')  # Expecting "Enabled" or "Disabled"
+    time_1_mode = datadict.get('time_1_mode', 'Load First')  # Expecting "Load First", "Battery First", "Grid First"
 
     # Add 32768 to time_1_start if time_1_enabled is 1
-    #if time_1_enabled == 1:
-    #    time_1_start += 32768
+    if time_1_enabled == 'Enabled':
+        time_1_start += 32768
 
     # Add 8192 * time_1_mode to time_1_start
-    #time_1_start += 8192 * time_1_mode
+    if time_1_mode == 'Battery First':
+        time_1_start += 8192
+    elif time_1_mode == 'Grid First':
+        time_1_start += 16384
 
     # Return the updated values for time_1_start and time_1_end
     return [
-        (REGISTER_U16, 2),
+        (REGISTER_U16, time_1_start),
         ('time_1_end', time_1_end),
     ]
 
