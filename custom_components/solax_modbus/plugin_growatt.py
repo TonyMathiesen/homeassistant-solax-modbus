@@ -96,16 +96,25 @@ class GrowattModbusSensorEntityDescription(BaseModbusSensorEntityDescription):
 
 # ====================================== Computed value functions  =================================================
 
-def value_function_timingmode(initval, descr, datadict):
-    return  [ ('timed_charge_start_h', datadict.get('timed_charge_start_h', 0), ),
-              ('timed_charge_start_m', datadict.get('timed_charge_start_m', 0), ),
-              ('timed_charge_end_h', datadict.get('timed_charge_end_h', 0), ),
-              ('timed_charge_end_m', datadict.get('timed_charge_end_m', 0), ),
-              ('timed_discharge_start_h', datadict.get('timed_discharge_start_h', 0), ),
-              ('timed_discharge_start_m', datadict.get('timed_discharge_start_m', 0), ),
-              ('timed_discharge_end_h', datadict.get('timed_discharge_end_h', 0), ),
-              ('timed_discharge_end_m', datadict.get('timed_discharge_end_m', 0), ),
-            ]
+def value_function_time_slot_1(initval, descr, datadict):
+    # Get the values from datadict
+    time_1_start = datadict.get('time_1_start', 0)
+    time_1_end = datadict.get('time_1_end', 0)
+    time_1_enabled = datadict.get('time_1_enabled', 0)  # Default to 0 if not found
+    time_1_mode = datadict.get('time_1_mode', 0)  # Default to 0 if not found
+
+    # Add 32768 to time_1_start if time_1_enabled is 1
+    #if time_1_enabled == 1:
+    #    time_1_start += 32768
+
+    # Add 8192 * time_1_mode to time_1_start
+    #time_1_start += 8192 * time_1_mode
+
+    # Return the updated values for time_1_start and time_1_end
+    return [
+        ('time_1_start', time_1_start),
+        ('time_1_end', time_1_end),
+    ]
 
 def value_function_today_s_solar_energy(initval, descr, datadict):
     return  datadict.get('today_s_pv1_solar_energy', 0) + datadict.get('today_s_pv2_solar_energy',0) + datadict.get('today_s_pv3_solar_energy',0) + datadict.get('today_s_pv4_solar_energy',0)
@@ -124,6 +133,15 @@ BUTTON_TYPES = [
         write_method = WRITE_MULTI_MODBUS,
         icon = "mdi:home-clock",
         value_function = value_function_sync_rtc_ymd,
+    ),
+    GrowattModbusButtonEntityDescription(
+        name = "Time Slot 1",
+        key = "time_slot_1",
+        register = 3038,
+        allowedtypes = HYBRID | GEN3,
+        write_method = WRITE_MULTI_MODBUS,
+        icon = "mdi:battery-clock",
+        value_function = value_function_time_slot_1,
     ),
 ]
 
@@ -859,6 +877,47 @@ SELECT_TYPES = [
         allowedtypes = HYBRID | AC | GEN3 | EPS,
         entity_category = EntityCategory.CONFIG,
         icon = "mdi:power-plug-battery",
+    ),
+    GrowattModbusSelectEntityDescription(
+        name = "Time 1-b Start",
+        key = "time_1_start",
+        option_dict = TIME_OPTIONS_GEN4,
+        unit = REGISTER_U16,
+        allowedtypes = HYBRID | GEN3,
+        entity_category = EntityCategory.CONFIG,
+        icon = "mdi:battery-clock",
+    ),
+    GrowattModbusSelectEntityDescription(
+        name = "Time 1-c End",
+        key = "time_1_end",
+        option_dict = TIME_OPTIONS_GEN4,
+        unit = REGISTER_U16,
+        allowedtypes = HYBRID | GEN3,
+        entity_category = EntityCategory.CONFIG,
+        icon = "mdi:battery-clock",
+    ),
+    GrowattModbusSelectEntityDescription(
+        name = "Time 1-a Mode",
+        key = "time_1_mode",
+        option_dict = {
+                0: "Load First",
+                1: "Battery First",
+                2: "Grid First",
+            },
+        allowedtypes = HYBRID | GEN3,
+        entity_category = EntityCategory.CONFIG,
+        icon = "mdi:battery-clock",
+    ),
+    GrowattModbusSelectEntityDescription(
+        name = "Time 1-c End",
+        key = "time_1_end",
+        option_dict = {
+                0: "Disabled",
+                1: "Enabled",
+            },
+        allowedtypes = HYBRID | GEN3,
+        entity_category = EntityCategory.CONFIG,
+        icon = "mdi:battery-clock",
     ),
     ###
     #
@@ -4385,6 +4444,24 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         rounding = 1,
         allowedtypes = GEN3 | HYBRID,
     ),
+    # TL-XH GEN3 load/battery/grid first priority 
+    # Read out set value in register. Return in decimal - not pretty currently
+    GrowattModbusSensorEntityDescription(
+        name = "Time 1 Start",
+        key = "time_1_start_read",
+        register = 3038, # TL-XH GEN3 load/battery/grid first priority
+        allowedtypes = GEN3 | HYBRID,
+        entity_registry_enabled_default = False,
+        entity_category = EntityCategory.DIAGNOSTIC,
+    ),
+    GrowattModbusSensorEntityDescription(
+        name = "Time 1 End",
+        key = "time_1_end_read",
+        register = 3039, #TL-XH GEN3 load/battery/grid first priority
+        allowedtypes = GEN3 | HYBRID,
+        entity_registry_enabled_default = False,
+        entity_category = EntityCategory.DIAGNOSTIC,
+    ),  
     #####
     #
     # SPF
