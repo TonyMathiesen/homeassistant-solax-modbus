@@ -126,6 +126,19 @@ def value_function_time_slot_1(initval, descr, datadict):
     else:
         _LOGGER.error(f"Growatt: Time 1 Start cannot be smaller than Time 1 End")
     #function end
+    
+def value_function_time_slot_1_reverse_end(initval, descr, datadict):
+    # Get the time_1_end value from the datadict, defaulting to 0 if not present
+    time_1_end = datadict.get('time_1_end_read', 0)
+
+    # Extract hours (higher 8 bits) and minutes (lower 8 bits)
+    hours = time_1_end // 256  # Integer division to get the hours
+    minutes = time_1_end % 256  # Modulo to get the minutes
+
+    # Format the time in "hh:mm" format
+    formatted_time = f"{hours:02}:{minutes:02}"
+
+    return formatted_time
 
 def value_function_today_s_solar_energy(initval, descr, datadict):
     return  datadict.get('today_s_pv1_solar_energy', 0) + datadict.get('today_s_pv2_solar_energy',0) + datadict.get('today_s_pv3_solar_energy',0) + datadict.get('today_s_pv4_solar_energy',0)
@@ -4477,6 +4490,15 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         name = "Time 1 End",
         key = "time_1_end_read",
         register = 3039, #TL-XH GEN3 load/battery/grid first priority
+        allowedtypes = GEN3 | HYBRID,
+        entity_registry_enabled_default = False,
+        entity_category = EntityCategory.DIAGNOSTIC,
+        #internal = True,
+    ),  
+    GrowattModbusSensorEntityDescription(
+        name = "Time 1 End",
+        key = "time_1_end",
+        value_function = value_function_time_slot_1_reverse_end,
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
