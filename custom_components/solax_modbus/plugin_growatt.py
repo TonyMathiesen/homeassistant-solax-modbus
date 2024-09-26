@@ -2262,7 +2262,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         state_class = SensorStateClass.MEASUREMENT,
         register = 35,
         register_type = REG_INPUT,
-        unit = REGISTER_U32,
+        unit = REGISTER_S32,
         scale = 0.1,
         rounding = 1,
         allowedtypes = GEN | GEN2 | GEN3,
@@ -3677,7 +3677,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         state_class = SensorStateClass.MEASUREMENT,
         register = 3023,
         register_type = REG_INPUT,
-        unit = REGISTER_U32,
+        unit = REGISTER_S32,
         allowedtypes = GEN3 | X3,
     ),
     GrowattModbusSensorEntityDescription(
