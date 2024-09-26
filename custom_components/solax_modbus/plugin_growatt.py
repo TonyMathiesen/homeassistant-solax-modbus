@@ -3678,6 +3678,8 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         register = 3023,
         register_type = REG_INPUT,
         unit = REGISTER_S32,
+        scale = 0.1,
+        rounding = 1,
         allowedtypes = GEN3 | X3,
     ),
     GrowattModbusSensorEntityDescription(
