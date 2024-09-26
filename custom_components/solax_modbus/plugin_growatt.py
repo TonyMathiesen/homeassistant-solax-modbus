@@ -908,6 +908,7 @@ SELECT_TYPES = [
         allowedtypes = HYBRID | GEN3,
         entity_category = EntityCategory.CONFIG,
         icon = "mdi:battery-clock",
+        prevent_update = True,
     ),
     GrowattModbusSelectEntityDescription(
         name = "Time 1-a Mode",
