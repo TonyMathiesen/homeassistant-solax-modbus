@@ -1,5 +1,5 @@
 from .const import ATTR_MANUFACTURER, DOMAIN, CONF_MODBUS_ADDR, DEFAULT_MODBUS_ADDR
-from .const import WRITE_DATA_LOCAL, WRITE_MULTISINGLE_MODBUS, WRITE_SINGLE_MODBUS
+from .const import WRITE_DATA_LOCAL, WRITE_MULTISINGLE_MODBUS, WRITE_SINGLE_MODBUS, TMPDATA_EXPIRY
 from homeassistant.components.select import PLATFORM_SCHEMA, SelectEntity
 from homeassistant.const import CONF_NAME
 from homeassistant.core import callback
@@ -73,6 +73,23 @@ class SolaXModbusSelect(SelectEntity):
 
     @property
     def current_option(self) -> str:
+        descr = self.entity_description
+
+        # Check if prevent_update is enabled
+        if descr.prevent_update:
+            # Check if temporary data hasn't expired
+            if self._hub.tmpdata_expiry.get(descr.key, 0) > time():
+                # Retrieve value from temporary data
+                val = self._hub.tmpdata.get(descr.key, None)
+                if val is None:
+                    _LOGGER.warning(f"cannot find tmpdata for {descr.key} - returning default option")
+                    return descr.initvalue  # Return the default option if no value found
+                return val
+            else:  # If the temporary data has expired
+                if self._hub.tmpdata_expiry.get(descr.key, 0) > 0:
+                    self._hub.localsUpdated = True  # Mark for local update once
+                self._hub.tmpdata_expiry[descr.key] = 0  # Expired, reset expiry
+                
         if self._key in self._hub.data:
             return self._hub.data[self._key]
         else:
