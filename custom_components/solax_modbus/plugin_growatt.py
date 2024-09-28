@@ -141,7 +141,7 @@ def value_function_time_slot_1_reverse_begin(initval, descr, datadict):
     return f"{hours:02}:{minutes:02}"
 
 def value_function_time_slot_1_reverse_end(initval, descr, datadict):
-    initval = datadict.get('time_1_end_read', 0)
+    #initval = datadict.get('time_1_end_read', 0)
     hours = initval // 256  # Integer division to get the hours
     minutes = initval % 256  # Modulo to get the minutes
     return f"{hours:02}:{minutes:02}"
