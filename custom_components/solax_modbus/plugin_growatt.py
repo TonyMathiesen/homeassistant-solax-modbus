@@ -127,19 +127,16 @@ def value_function_time_slot_1(initval, descr, datadict):
         _LOGGER.error(f"Growatt: Time 1 Start cannot be smaller than Time 1 End")
     #function end
     
-def value_function_time_slot_1_reverse_end(initval, descr, datadict):
-    # Get the time_1_end value from the datadict, defaulting to 0 if not present
-    time_1_end = datadict.get('time_1_end_read', 0)
-
+def value_function_growatt_gen4time(initval, descr, datadict):
     # Extract hours (higher 8 bits) and minutes (lower 8 bits)
-    #hours = time_1_end // 256  # Integer division to get the hours
-    #minutes = time_1_end % 256  # Modulo to get the minutes
+    hours = initval // 256  # Integer division to get the hours
+    minutes = initval % 256  # Modulo to get the minutes
+    return f"{hours:02}:{minutes:02}"
 
-    # Format the time in "hh:mm" format
-    #formatted_time = f"{hours:02}:{minutes:02}"
+def value_function_time_slot_1_reverse_end(initval, descr, datadict):
+    time_1_end = datadict.get('time_1_end_read', 0)
+    return time_1_end 
 
-    #return formatted_time
-    value_function_gen4time(time_1_end)
 def value_function_time_slot_1_reverse_enabled(initval, descr, datadict):
     # Get the value of 'time_1_end_read', defaulting to 0 if it's not present
     time_1_enabled = datadict.get('time_1_end_read', 0)
@@ -4510,20 +4507,20 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         entity_category = EntityCategory.DIAGNOSTIC,
         #internal = True,
     ),
-    #GrowattModbusSensorEntityDescription(
-    #    name = "Time 1 End",
-    #    key = "time_1_end_read",
-    #    register = 3039, #TL-XH GEN3 load/battery/grid first priority
-    #    allowedtypes = GEN3 | HYBRID,
-    #    entity_registry_enabled_default = False,
-    #    entity_category = EntityCategory.DIAGNOSTIC,
-    #    #internal = True,
-    #),  
+    GrowattModbusSensorEntityDescription(
+        name = "Time 1 End",
+        key = "time_1_end_read",
+        register = 3039, #TL-XH GEN3 load/battery/grid first priority
+        allowedtypes = GEN3 | HYBRID,
+        entity_registry_enabled_default = False,
+        entity_category = EntityCategory.DIAGNOSTIC,
+        #internal = True,
+    ),  
     GrowattModbusSensorEntityDescription(
         name = "Time 1 End",
         key = "time_1_end",
-        register = 3039,
-        scale = value_function_gen4time,
+        value_function = value_function_time_slot_1_reverse_end
+        scale = value_function_growatt_gen4time,
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
