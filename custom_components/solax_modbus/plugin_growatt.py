@@ -105,17 +105,6 @@ def value_function_time_slot_1(initval, descr, datadict):
     time_1_end = time_to_int(datadict.get('time_1_end', '00:00'))
     time_1_enabled = datadict.get('time_1_enabled', 'Disabled')  # Expecting "Enabled" or "Disabled"
     time_1_mode = datadict.get('time_1_mode', 'Load First')  # Expecting "Load First", "Battery First", "Grid First"
-
-    _LOGGER.debug(f"datadict content: {datadict}")  # Log the entire datadict
-    tmpdata = datadict.get('tmpdata', {})
-    _LOGGER.debug(f"tmpdata content: {tmpdata}")  # Log tmpdata specifically
-    time_1_begin_tmp = datadict.get('tmpdata', {}).get('time_1_begin', 0)
-
-    _LOGGER.debug(f"DEBUG: time_1_begin {time_1_begin}")
-    _LOGGER.debug(f"DEBUG: time_1_begin tmp {time_1_begin_tmp}")
-    _LOGGER.debug(f"DEBUG: time_1_end {time_1_end}")
-    _LOGGER.debug(f"DEBUG: time_1_enabled {time_1_enabled}")
-    _LOGGER.debug(f"DEBUG: time_1_mode {time_1_mode}")
     
     # Add 32768 to time_1_begin if time_1_enabled is 1
     if time_1_enabled == 'Enabled':
