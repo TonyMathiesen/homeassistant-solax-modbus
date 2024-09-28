@@ -132,8 +132,7 @@ class SolaXModbusSelect(SelectEntity):
         elif self._write_method == WRITE_DATA_LOCAL:
             _LOGGER.info(f"*** local data written {self._key}: {payload}")
             if self.entity_description.prevent_update: # if corresponding_sensor: # only if corresponding sensor has prevent_update=True
-                self._hub.tmpdata[self.entity_description.key] = payload
-                self._hub.tmpdata[self.entity_description.option] = option
+                self._hub.tmpdata[self.entity_description.key] = option
                 self._hub.tmpdata_expiry[self.entity_description.key] = time() + TMPDATA_EXPIRY
             self._hub.localsUpdated = True # mark to save permanently
         self._hub.data[self._key] = option
