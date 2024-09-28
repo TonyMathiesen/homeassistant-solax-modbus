@@ -4510,28 +4510,18 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         entity_category = EntityCategory.DIAGNOSTIC,
         #internal = True,
     ),
-    #GrowattModbusSensorEntityDescription(
-    #    name = "Time 1 End",
-    #    key = "time_1_end_read",
-    #    register = 3039, #TL-XH GEN3 load/battery/grid first priority
-    #    allowedtypes = GEN3 | HYBRID,
-    #    entity_registry_enabled_default = False,
-    #    entity_category = EntityCategory.DIAGNOSTIC,
-    #    #internal = True,
-    #),  
-    #GrowattModbusSensorEntityDescription(
-    #    name = "Time 1 End",
-    #    key = "time_1_end",
-    #    value_function = value_function_time_slot_1_reverse_end,
-    #    allowedtypes = GEN3 | HYBRID,
-    #    entity_registry_enabled_default = False,
-    #    entity_category = EntityCategory.DIAGNOSTIC,
-    #    #internal = True,
-    #),  
+    GrowattModbusSensorEntityDescription(
+        name = "Time 1 End",
+        key = "time_1_end_read",
+        register = 3039, #TL-XH GEN3 load/battery/grid first priority
+        allowedtypes = GEN3 | HYBRID,
+        entity_registry_enabled_default = False,
+        entity_category = EntityCategory.DIAGNOSTIC,
+        #internal = True,
+    ),  
     GrowattModbusSensorEntityDescription(
         name = "Time 1 End",
         key = "time_1_end",
-        register = 3039,
         value_function = value_function_gen4time,
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
