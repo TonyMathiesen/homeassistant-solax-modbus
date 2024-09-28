@@ -134,10 +134,12 @@ def value_function_growatt_gen4time(initval, descr, datadict):
     return f"{hours:02}:{minutes:02}"
 
 def value_function_time_slot_1_reverse_begin(initval, descr, datadict):
-    return datadict.get('time_1_begin_read', 0)
+    initval = datadict.get('time_1_begin_read', 0)
+    return initval
 
 def value_function_time_slot_1_reverse_end(initval, descr, datadict):
-    return datadict.get('time_1_end_read', 0)
+    initval = datadict.get('time_1_end_read', 0)
+    return initval
 
 def value_function_time_slot_1_reverse_enabled(initval, descr, datadict):
     # Get the value of 'time_1_end_read', defaulting to 0 if it's not present
@@ -926,17 +928,18 @@ SELECT_TYPES = [
         icon = "mdi:power-plug-battery",
     ),
     GrowattModbusSelectEntityDescription(
-        name = "Time 1-b Start",
-        key = "time_1_start",
+        name = "Time 1 Begin",
+        key = "time_1_begin",
         option_dict = TIME_OPTIONS_GEN4,
         write_method = WRITE_DATA_LOCAL,
         unit = REGISTER_U16,
         allowedtypes = HYBRID | GEN3,
         entity_category = EntityCategory.CONFIG,
         icon = "mdi:battery-clock",
+        prevent_update = True,
     ),
     GrowattModbusSelectEntityDescription(
-        name = "Time 1-c End",
+        name = "Time 1 End",
         key = "time_1_end",
         option_dict = TIME_OPTIONS_GEN4,
         write_method = WRITE_DATA_LOCAL,
@@ -947,7 +950,7 @@ SELECT_TYPES = [
         prevent_update = True,
     ),
     GrowattModbusSelectEntityDescription(
-        name = "Time 1-a Mode",
+        name = "Time 1 Mode",
         key = "time_1_mode",
         option_dict = {
                 0: "Load First",
@@ -958,6 +961,7 @@ SELECT_TYPES = [
         allowedtypes = HYBRID | GEN3,
         entity_category = EntityCategory.CONFIG,
         icon = "mdi:battery-clock",
+        prevent_update = True,
     ),
     GrowattModbusSelectEntityDescription(
         name = "Time 1-d Enabled",
@@ -970,6 +974,7 @@ SELECT_TYPES = [
         allowedtypes = HYBRID | GEN3,
         entity_category = EntityCategory.CONFIG,
         icon = "mdi:battery-clock",
+        prevent_update = True,
     ),
     ###
     #
