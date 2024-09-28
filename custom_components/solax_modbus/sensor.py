@@ -7,6 +7,7 @@ from typing import Optional, Dict, Any, List
 from types  import SimpleNamespace
 from dataclasses import dataclass, replace
 from copy import copy
+from time import time
 import homeassistant.util.dt as dt_util
 
 from .const import ATTR_MANUFACTURER, DOMAIN, SLEEPMODE_NONE, SLEEPMODE_ZERO
@@ -310,8 +311,14 @@ class SolaXModbusSensor(SensorEntity):
 
     @property
     def native_value(self):
-        """Return the state of the sensor."""
         _LOGGER.debug(f"DEBUG SENSOR: update_state {self.entity_description.key} : {self._hub.data.get(self.entity_description.key,'None')}")
+        if self._hub.tmpdata_expiry.get(self.entity_description.key, 0) > time():
+            _LOGGER.debug(f"DEBUG SENSOR: EXPIRE data er der.. update_state {self.entity_description.key} : {self._hub.tmpdata.get(self.entity_description.key,'None')}")
+            return self._hub.tmpdata.get(self.entity_description.key, None)
+        else:  # If the temporary data has expired
+            _LOGGER.debug(f"DEBUG SENSOR: EXPIRE data er IKKE der.. update_state {self.entity_description.key} : {self._hub.data.get(self.entity_description.key,'None')}")
+        
+        """Return the state of the sensor."""
         if self.entity_description.key in self._hub.data:
             try:    val = self._hub.data[self.entity_description.key]*self.entity_description.read_scale # a bit ugly as we might multiply strings or other types with 1
             except: val = self._hub.data[self.entity_description.key] # not a number
