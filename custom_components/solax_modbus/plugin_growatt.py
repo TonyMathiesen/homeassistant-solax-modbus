@@ -141,7 +141,7 @@ def value_function_time_slot_1_reverse_begin(initval, descr, datadict):
     return f"{hours:02}:{minutes:02}"
 
 def value_function_time_slot_1_reverse_end(initval, descr, datadict):
-    #initval = datadict.get('time_1_end_read', 0)
+    initval = datadict.get('time_1_end_read', 0)
     hours = initval // 256  # Integer division to get the hours
     minutes = initval % 256  # Modulo to get the minutes
     return f"{hours:02}:{minutes:02}"
@@ -4534,7 +4534,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         name = "Time 1 End (read)",
         key = "time_1_end_read",
         register = 3039, #TL-XH GEN3 load/battery/grid first priority
-        scale = value_function_growatt_gen4time,
+        #scale = value_function_growatt_gen4time,
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
@@ -4543,8 +4543,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
     GrowattModbusSensorEntityDescription(
         name = "Time 1 End",
         key = "time_1_end",
-        register = 3039,
-        scale = value_function_growatt_gen4time,
+        value_function = value_function_time_slot_1_reverse_end,
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
