@@ -102,11 +102,17 @@ def value_function_time_slot_1(initval, descr, datadict):
         return (hours * 256) + minutes
 
     time_1_begin = time_to_int(datadict.get('time_1_begin', '00:00'))
-    time_1_end = datadict.get('time_1_end', 0)
+    time_1_end = time_to_int(datadict.get('time_1_end', '00:00'))
     time_1_enabled = datadict.get('time_1_enabled', 'Disabled')  # Expecting "Enabled" or "Disabled"
     time_1_mode = datadict.get('time_1_mode', 'Load First')  # Expecting "Load First", "Battery First", "Grid First"
 
+    _LOGGER.debug(f"datadict content: {datadict}")  # Log the entire datadict
+    tmpdata = datadict.get('tmpdata', {})
+    _LOGGER.debug(f"tmpdata content: {tmpdata}")  # Log tmpdata specifically
+    time_1_begin_tmp = datadict.get('tmpdata', {}).get('time_1_begin', 0)
+
     _LOGGER.debug(f"DEBUG: time_1_begin {time_1_begin}")
+    _LOGGER.debug(f"DEBUG: time_1_begin tmp {time_1_begin_tmp}")
     _LOGGER.debug(f"DEBUG: time_1_end {time_1_end}")
     _LOGGER.debug(f"DEBUG: time_1_enabled {time_1_enabled}")
     _LOGGER.debug(f"DEBUG: time_1_mode {time_1_mode}")
@@ -122,7 +128,7 @@ def value_function_time_slot_1(initval, descr, datadict):
         time_1_begin += 16384
 
     # Check if end is larger than start or 
-    if (time_to_int(datadict.get('time_1_end', '00:00')) > time_to_int(datadict.get('time_1_begin', '00:00'))) or (time_1_begin == 0 and time_to_int(datadict.get('time_1_end', '00:00')) == 0):
+    if (time_to_int(datadict.get('time_1_end', '00:00')) > time_to_int(datadict.get('time_1_begin', '00:00'))) or (time_1_begin == 0 and time_1_end == 0):
         # Return the updated values for time_1_begin and time_1_end
         return [
             (REGISTER_U16, time_1_begin),
@@ -4514,7 +4520,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
-        internal = True,
+        #internal = True,
     ),
     GrowattModbusSensorEntityDescription(
         name = "Time 1 Begin",
@@ -4531,7 +4537,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
-        internal = True,
+        #internal = True,
     ),  
     GrowattModbusSensorEntityDescription(
         name = "Time 1 End",
