@@ -88,6 +88,7 @@ class SolaXModbusSelect(SelectEntity):
                 if self._hub.tmpdata_expiry.get(descr.key, 0) > 0:
                     self._hub.localsUpdated = True  # Mark for local update once
                 self._hub.tmpdata_expiry[descr.key] = 0  # Expired, reset expiry
+
         
         if self._key in self._hub.data:
             return self._hub.data[self._key]
