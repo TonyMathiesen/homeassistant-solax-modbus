@@ -132,7 +132,30 @@ def value_function_time_slot_1(initval, descr, datadict):
     else:
         _LOGGER.error(f"Growatt: Time 1 Begin cannot be smaller than Time 1 End")
     #function end
+
+def value_function_intern_3038(initval, descr, datadict):
+    def time_to_int(time_str):
+        hours, minutes = map(int, time_str.split(':'))
+        return (hours * 256) + minutes
+
+    _LOGGER.debug(f"DEBUG value_function_intern_3038: time_1_begin: {datadict.get('time_1_begin', '00:00')}")
+    time_1_begin = time_to_int(datadict.get('time_1_begin', '00:00'))
+    time_1_enabled = datadict.get('time_1_enabled', 'Disabled')  # Expecting "Enabled" or "Disabled"
+    time_1_mode = datadict.get('time_1_mode', 'Load First')  # Expecting "Load First", "Battery First", "Grid First"
     
+    # Add 32768 to time_1_begin if time_1_enabled is 1
+    if time_1_enabled == 'Enabled':
+        time_1_begin += 32768
+
+    # Add 8192 * time_1_mode to time_1_begin
+    if time_1_mode == 'Battery First':
+        time_1_begin += 8192
+    elif time_1_mode == 'Grid First':
+        time_1_begin += 16384
+        
+    _LOGGER.debug(f"DEBUG value_function_intern_3038: time_1_begin: {time_1_begin}, time_1_enabled: {time_1_enabled}, time_1_mode: {time_1_mode}")
+    return time_1_begin
+
 def value_function_growatt_gen4time(initval, descr, datadict):
     hours = initval // 256  # Integer division to get the hours (higher 8 bits)
     minutes = initval % 256  # Modulo to get the minutes (lower 8 bits)
@@ -4555,6 +4578,15 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
     ),
+    GrowattModbusSensorEntityDescription(
+        name = "Time intern 3038",
+        key = "intern_3038",
+        value_function = value_function_intern_3038,
+        allowedtypes = GEN3 | HYBRID,
+        entity_registry_enabled_default = False,
+        entity_category = EntityCategory.DIAGNOSTIC,
+    ),
+    
     #####
     #
     # SPF
