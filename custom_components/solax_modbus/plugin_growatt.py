@@ -134,6 +134,8 @@ def value_function_growatt_gen4time(initval, descr, datadict):
 
 def value_function_time_slot_1_reverse_begin(initval, descr, datadict):
     initval = datadict.get('time_1_begin_read', 0) # need to use a read entity to avoid overwriting the select
+    _LOGGER.error(f"DEBUG: time_1_begin_read: {initval}")
+    _LOGGER.error(f"DEBUG: time_1_begin: {datadict.get('time_1_begin', 0)}")
     initval = initval & 0x1FFF # Remove bits 13-15 using a bitwise AND with 0x1FFF
     hours = initval // 256  # Integer division to get the hours
     minutes = initval % 256  # Modulo to get the minutes
