@@ -75,9 +75,10 @@ class SolaXModbusSelect(SelectEntity):
     @property
     def current_option(self) -> str:
         descr = self.entity_description
-
+        _LOGGER.debug(f"DEBUG Check if prevent_update is enabled {descr.key}")
         # Check if prevent_update is enabled
         if descr.prevent_update:
+            _LOGGER.debug(f"DEBUG prevent_update is true {descr.key}")
             # Check if temporary data hasn't expired
             if self._hub.tmpdata_expiry.get(descr.key, 0) > time():
                 # Retrieve value from temporary data
