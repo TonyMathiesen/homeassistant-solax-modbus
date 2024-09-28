@@ -77,31 +77,20 @@ class SolaXModbusSelect(SelectEntity):
         descr = self.entity_description
         # Check if prevent_update is enabled
         if descr.prevent_update:
-            _LOGGER.debug(f"DEBUG prevent_update is true {descr.key}")
             # Check if temporary data hasn't expired
             if self._hub.tmpdata_expiry.get(descr.key, 0) > time():
-                _LOGGER.debug(f"DEBUG prevent_update is not expired {descr.key}")
                 # Retrieve option from temporary data
-                val = self._hub.tmpdata.get(descr.key, None)
-                _LOGGER.debug(f"DEBUG tmpdata for {descr.key}: {val}")
-                
-                if val is None:
-                    _LOGGER.warning(f"cannot find tmpdata for {descr.key} - returning default option")
-                    return descr.initvalue  # Return the default option if no value found
-                return val
+                option = self._hub.tmpdata.get(descr.key, None)                
+                if option is None:
+                    _LOGGER.warning(f"cannot find tmpdata for {descr.key} - allow update despite prevent_update")
             else:  # If the temporary data has expired
-                _LOGGER.debug(f"DEBUG prevent_update is expired {descr.key}")
                 if self._hub.tmpdata_expiry.get(descr.key, 0) > 0:
                     self._hub.localsUpdated = True  # Mark for local update once
                 self._hub.tmpdata_expiry[descr.key] = 0  # Expired, reset expiry
-
-        _LOGGER.debug(f"DEBUG checking _hub.data for key {self._key}")
         
         if self._key in self._hub.data:
-            _LOGGER.debug(f"DEBUG _hub.data for {self._key}: {self._hub.data[self._key]}")
             return self._hub.data[self._key]
         else:
-            _LOGGER.debug(f"DEBUG Returning default initvalue for {descr.key}: {descr.initvalue}")
             return self.entity_description.initvalue
 
     @property
