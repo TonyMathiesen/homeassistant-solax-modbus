@@ -101,16 +101,21 @@ def value_function_time_slot_1(initval, descr, datadict):
         hours, minutes = map(int, time_str.split(':'))
         return (hours * 256) + minutes
 
-    time_1_begin = time_to_int(datadict.get('time_1_start', '00:00'))
+    time_1_begin = time_to_int(datadict.get('time_1_begin', '00:00'))
     time_1_end = datadict.get('time_1_end', 0)
     time_1_enabled = datadict.get('time_1_enabled', 'Disabled')  # Expecting "Enabled" or "Disabled"
     time_1_mode = datadict.get('time_1_mode', 'Load First')  # Expecting "Load First", "Battery First", "Grid First"
 
-    # Add 32768 to time_1_start if time_1_enabled is 1
+    _LOGGER.debug(f"DEBUG: time_1_begin {time_1_begin}")
+    _LOGGER.debug(f"DEBUG: time_1_end {time_1_end}")
+    _LOGGER.debug(f"DEBUG: time_1_enabled {time_1_enabled}")
+    _LOGGER.debug(f"DEBUG: time_1_mode {time_1_mode}")
+    
+    # Add 32768 to time_1_begin if time_1_enabled is 1
     if time_1_enabled == 'Enabled':
         time_1_begin += 32768
 
-    # Add 8192 * time_1_mode to time_1_start
+    # Add 8192 * time_1_mode to time_1_begin
     if time_1_mode == 'Battery First':
         time_1_begin += 8192
     elif time_1_mode == 'Grid First':
@@ -128,28 +133,26 @@ def value_function_time_slot_1(initval, descr, datadict):
     #function end
     
 def value_function_growatt_gen4time(initval, descr, datadict):
-    # Extract hours (higher 8 bits) and minutes (lower 8 bits)
-    hours = initval // 256  # Integer division to get the hours
-    minutes = initval % 256  # Modulo to get the minutes
+    hours = initval // 256  # Integer division to get the hours (higher 8 bits)
+    minutes = initval % 256  # Modulo to get the minutes (lower 8 bits)
     return f"{hours:02}:{minutes:02}"
 
 def value_function_time_slot_1_reverse_begin(initval, descr, datadict):
-    initval = datadict.get('time_1_begin_read', 0)
+    initval = datadict.get('time_1_begin_read', 0) # need to use a read entity to avoid overwriting the select
     initval = initval & 0x1FFF # Remove bits 13-15 using a bitwise AND with 0x1FFF
     hours = initval // 256  # Integer division to get the hours
     minutes = initval % 256  # Modulo to get the minutes
     return f"{hours:02}:{minutes:02}"
 
 def value_function_time_slot_1_reverse_end(initval, descr, datadict):
-    initval = datadict.get('time_1_end_read', 0)
+    initval = datadict.get('time_1_end_read', 0) # need to use a read entity to avoid overwriting the select
     hours = initval // 256  # Integer division to get the hours
     minutes = initval % 256  # Modulo to get the minutes
     return f"{hours:02}:{minutes:02}"
 
 def value_function_time_slot_1_reverse_enabled(initval, descr, datadict):
-    time_1_enabled = datadict.get('time_1_begin_read', 0)
-    
-    if int(time_1_enabled) & (1 << 15): # Check if bit 15 is set (this is the 16th bit, which means we need to check (1 << 15))
+    time_1_enabled = datadict.get('time_1_begin_read', 0) # need to use a read entity to avoid overwriting the select
+    if int(time_1_enabled) & (1 << 15): # Check if bit 15 is set 
         return "Enabled"
     else:
         return "Disabled"
@@ -4511,7 +4514,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
-        #internal = True,
+        internal = True,
     ),
     GrowattModbusSensorEntityDescription(
         name = "Time 1 Begin",
@@ -4520,7 +4523,6 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
-        #internal = True,
     ),  
     GrowattModbusSensorEntityDescription(
         name = "Time 1 End (read)",
@@ -4529,7 +4531,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
-        #internal = True,
+        internal = True,
     ),  
     GrowattModbusSensorEntityDescription(
         name = "Time 1 End",
@@ -4538,7 +4540,6 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
-        #internal = True,
     ),  
     GrowattModbusSensorEntityDescription(
         name = "Time 1 Mode",
@@ -4547,7 +4548,6 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
-        #internal = True,
     ),  
     GrowattModbusSensorEntityDescription(
         name = "Time 1 Enabled",
@@ -4556,7 +4556,6 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
-        #internal = True,
     ),
     #####
     #
