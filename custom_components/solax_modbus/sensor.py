@@ -317,6 +317,8 @@ class SolaXModbusSensor(SensorEntity):
         #    return self._hub.tmpdata.get(self.entity_description.key, None)
 
         #_LOGGER.debug(f"DEBUG SENSOR: EXPIRE data er IKKE der.. update_state {self.entity_description.key} : {self._hub.data.get(self.entity_description.key,'None')}")
+
+        _LOGGER.debug(f"DEBUG SENSOR: native_value.. {self.entity_description.key} : {self._hub.data.get(self.entity_description.key,'None')}")
         
         """Return the state of the sensor."""
         if self.entity_description.key in self._hub.data:
