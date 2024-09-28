@@ -81,6 +81,7 @@ class SolaXModbusSelect(SelectEntity):
             _LOGGER.debug(f"DEBUG prevent_update is true {descr.key}")
             # Check if temporary data hasn't expired
             if self._hub.tmpdata_expiry.get(descr.key, 0) > time():
+                _LOGGER.debug(f"DEBUG prevent_update is not expired {descr.key}")
                 # Retrieve value from temporary data
                 val = self._hub.tmpdata.get(descr.key, None)
                 if val is None:
@@ -88,6 +89,7 @@ class SolaXModbusSelect(SelectEntity):
                     return descr.initvalue  # Return the default option if no value found
                 return val
             else:  # If the temporary data has expired
+                _LOGGER.debug(f"DEBUG prevent_update is expired {descr.key}")
                 if self._hub.tmpdata_expiry.get(descr.key, 0) > 0:
                     self._hub.localsUpdated = True  # Mark for local update once
                 self._hub.tmpdata_expiry[descr.key] = 0  # Expired, reset expiry
