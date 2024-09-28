@@ -97,8 +97,10 @@ class SolaXModbusSelect(SelectEntity):
         _LOGGER.debug(f"DEBUG checking _hub.data for key {self._key}")
         
         if self._key in self._hub.data:
+            _LOGGER.debug(f"DEBUG _hub.data for {self._key}: {self._hub.data[self._key]}")
             return self._hub.data[self._key]
         else:
+            _LOGGER.debug(f"DEBUG Returning default initvalue for {descr.key}: {descr.initvalue}")
             return self.entity_description.initvalue
 
     @property
