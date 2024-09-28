@@ -135,11 +135,16 @@ def value_function_growatt_gen4time(initval, descr, datadict):
 
 def value_function_time_slot_1_reverse_begin(initval, descr, datadict):
     initval = datadict.get('time_1_begin_read', 0)
-    return initval
+    initval = initval & 0x1FFF # Remove bits 13-15 using a bitwise AND with 0x1FFF
+    hours = initval // 256  # Integer division to get the hours
+    minutes = initval % 256  # Modulo to get the minutes
+    return f"{hours:02}:{minutes:02}"
 
 def value_function_time_slot_1_reverse_end(initval, descr, datadict):
     initval = datadict.get('time_1_end_read', 0)
-    return initval
+    hours = initval // 256  # Integer division to get the hours
+    minutes = initval % 256  # Modulo to get the minutes
+    return f"{hours:02}:{minutes:02}"
 
 def value_function_time_slot_1_reverse_enabled(initval, descr, datadict):
     # Get the value of 'time_1_end_read', defaulting to 0 if it's not present
@@ -4518,7 +4523,6 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         name = "Time 1 Begin",
         key = "time_1_begin",
         value_function = value_function_time_slot_1_reverse_begin,
-        scale = value_function_growatt_gen4time,
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
@@ -4537,12 +4541,29 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         name = "Time 1 End",
         key = "time_1_end",
         value_function = value_function_time_slot_1_reverse_end,
-        scale = value_function_growatt_gen4time,
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
         #internal = True,
     ),  
+    GrowattModbusSensorEntityDescription(
+        name = "Time 1 Mode",
+        key = "time_1_mode",
+        value_function = value_function_time_slot_1_reverse_mode,
+        allowedtypes = GEN3 | HYBRID,
+        entity_registry_enabled_default = False,
+        entity_category = EntityCategory.DIAGNOSTIC,
+        #internal = True,
+    ),  
+    GrowattModbusSensorEntityDescription(
+        name = "Time 1 Enabled",
+        key = "time_1_enabled",
+        value_function = value_function_time_slot_1_reverse_enabled,
+        allowedtypes = GEN3 | HYBRID,
+        entity_registry_enabled_default = False,
+        entity_category = EntityCategory.DIAGNOSTIC,
+        #internal = True,
+    ),
     #####
     #
     # SPF
