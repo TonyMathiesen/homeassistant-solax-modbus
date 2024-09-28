@@ -100,11 +100,17 @@ def value_function_time_slot_1(initval, descr, datadict):
     def time_to_int(time_str):
         hours, minutes = map(int, time_str.split(':'))
         return (hours * 256) + minutes
-
+        
     time_1_begin = time_to_int(datadict.get('time_1_begin', '00:00'))
     time_1_end = time_to_int(datadict.get('time_1_end', '00:00'))
     time_1_enabled = datadict.get('time_1_enabled', 'Disabled')  # Expecting "Enabled" or "Disabled"
     time_1_mode = datadict.get('time_1_mode', 'Load First')  # Expecting "Load First", "Battery First", "Grid First"
+    _LOGGER.debug(f"DEBUG value_function_time_slot_1: time_1_begin: {time_1_begin}, time_1_end: {time_1_end}, time_1_enabled: {time_1_enabled}, time_1_mode: {time_1_mode}")
+
+
+    # Convert the times from strings to integers for calculation
+    time_1_begin = time_to_int(time_1_begin)
+    time_1_end = time_to_int(time_1_end)
     
     # Add 32768 to time_1_begin if time_1_enabled is 1
     if time_1_enabled == 'Enabled':
@@ -134,8 +140,6 @@ def value_function_growatt_gen4time(initval, descr, datadict):
 
 def value_function_time_slot_1_reverse_begin(initval, descr, datadict):
     initval = datadict.get('time_1_begin_read', 0) # need to use a read entity to avoid overwriting the select
-    _LOGGER.error(f"DEBUG: time_1_begin_read: {initval}")
-    _LOGGER.error(f"DEBUG: time_1_begin: {datadict.get('time_1_begin', 0)}")
     initval = initval & 0x1FFF # Remove bits 13-15 using a bitwise AND with 0x1FFF
     hours = initval // 256  # Integer division to get the hours
     minutes = initval % 256  # Modulo to get the minutes
