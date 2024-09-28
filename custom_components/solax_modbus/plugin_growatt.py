@@ -4501,15 +4501,15 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
     ),
     # TL-XH GEN3 load/battery/grid first priority 
     # Read out set value in register. Return in decimal - not pretty currently
-    GrowattModbusSensorEntityDescription(
-        name = "Time 1 Begin (read)",
-        key = "time_1_begin_read",
-        register = 3038, # TL-XH GEN3 load/battery/grid first priority
-        allowedtypes = GEN3 | HYBRID,
-        entity_registry_enabled_default = False,
-        entity_category = EntityCategory.DIAGNOSTIC,
-        #internal = True,
-    ),
+    #GrowattModbusSensorEntityDescription(
+    #    name = "Time 1 Begin (read)",
+    #    key = "time_1_begin_read",
+    #    register = 3038, # TL-XH GEN3 load/battery/grid first priority
+    #    allowedtypes = GEN3 | HYBRID,
+    #    entity_registry_enabled_default = False,
+    #    entity_category = EntityCategory.DIAGNOSTIC,
+    #    #internal = True,
+    #),
     GrowattModbusSensorEntityDescription(
         name = "Time 1 Begin",
         key = "time_1_begin",
@@ -4520,15 +4520,15 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
     ),  
-    GrowattModbusSensorEntityDescription(
-        name = "Time 1 End (read)",
-        key = "time_1_end_read",
-        register = 3039, #TL-XH GEN3 load/battery/grid first priority
-        allowedtypes = GEN3 | HYBRID,
-        entity_registry_enabled_default = False,
-        entity_category = EntityCategory.DIAGNOSTIC,
-        #internal = True,
-    ),  
+    #GrowattModbusSensorEntityDescription(
+    #    name = "Time 1 End (read)",
+    #    key = "time_1_end_read",
+    #    register = 3039, #TL-XH GEN3 load/battery/grid first priority
+    #    allowedtypes = GEN3 | HYBRID,
+    #    entity_registry_enabled_default = False,
+    #    entity_category = EntityCategory.DIAGNOSTIC,
+    #    #internal = True,
+    #),  
     GrowattModbusSensorEntityDescription(
         name = "Time 1 End",
         key = "time_1_end",
