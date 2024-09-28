@@ -84,10 +84,16 @@ class SolaXModbusSelect(SelectEntity):
                 # Retrieve value from temporary data
                 val = self._hub.tmpdata.get(descr.key, None)
                 _LOGGER.debug(f"DEBUG tmpdata for {descr.key}: {val}")
+                
                 if val is None:
                     _LOGGER.warning(f"cannot find tmpdata for {descr.key} - returning default option")
                     return descr.initvalue  # Return the default option if no value found
-                return val
+                #return val
+                # Convert the decimal value to hh:mm format
+                hours = val // 256
+                minutes = val % 256
+                _LOGGER.debug(f"DEBUG tmpdata for {descr.key}: {val} - {hours:02}:{minutes:02}")
+                return f"{hours:02}:{minutes:02}"  # Return formatted time
             else:  # If the temporary data has expired
                 _LOGGER.debug(f"DEBUG prevent_update is expired {descr.key}")
                 if self._hub.tmpdata_expiry.get(descr.key, 0) > 0:
