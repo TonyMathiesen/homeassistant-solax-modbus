@@ -101,30 +101,30 @@ def value_function_time_slot_1(initval, descr, datadict):
         hours, minutes = map(int, time_str.split(':'))
         return (hours * 256) + minutes
 
-    time_1_start = time_to_int(datadict.get('time_1_start', '00:00'))
+    time_1_begin = time_to_int(datadict.get('time_1_start', '00:00'))
     time_1_end = datadict.get('time_1_end', 0)
     time_1_enabled = datadict.get('time_1_enabled', 'Disabled')  # Expecting "Enabled" or "Disabled"
     time_1_mode = datadict.get('time_1_mode', 'Load First')  # Expecting "Load First", "Battery First", "Grid First"
 
     # Add 32768 to time_1_start if time_1_enabled is 1
     if time_1_enabled == 'Enabled':
-        time_1_start += 32768
+        time_1_begin += 32768
 
     # Add 8192 * time_1_mode to time_1_start
     if time_1_mode == 'Battery First':
-        time_1_start += 8192
+        time_1_begin += 8192
     elif time_1_mode == 'Grid First':
-        time_1_start += 16384
+        time_1_begin += 16384
 
     # Check if end is larger than start or 
-    if (time_to_int(datadict.get('time_1_end', '00:00')) > time_to_int(datadict.get('time_1_start', '00:00'))) or (time_1_start == 0 and time_to_int(datadict.get('time_1_end', '00:00')) == 0):
-        # Return the updated values for time_1_start and time_1_end
+    if (time_to_int(datadict.get('time_1_end', '00:00')) > time_to_int(datadict.get('time_1_begin', '00:00'))) or (time_1_begin == 0 and time_to_int(datadict.get('time_1_end', '00:00')) == 0):
+        # Return the updated values for time_1_begin and time_1_end
         return [
-            (REGISTER_U16, time_1_start),
-            ('time_1_end', time_1_end),
+            (REGISTER_U16, time_1_begin),
+            (REGISTER_U16, time_1_end),
         ]
     else:
-        _LOGGER.error(f"Growatt: Time 1 Start cannot be smaller than Time 1 End")
+        _LOGGER.error(f"Growatt: Time 1 Begin cannot be smaller than Time 1 End")
     #function end
     
 def value_function_growatt_gen4time(initval, descr, datadict):
@@ -133,13 +133,15 @@ def value_function_growatt_gen4time(initval, descr, datadict):
     minutes = initval % 256  # Modulo to get the minutes
     return f"{hours:02}:{minutes:02}"
 
+def value_function_time_slot_1_reverse_begin(initval, descr, datadict):
+    return datadict.get('time_1_begin_read', 0)
+
 def value_function_time_slot_1_reverse_end(initval, descr, datadict):
-    time_1_end = datadict.get('time_1_end_read', 0)
-    return time_1_end 
+    return datadict.get('time_1_end_read', 0)
 
 def value_function_time_slot_1_reverse_enabled(initval, descr, datadict):
     # Get the value of 'time_1_end_read', defaulting to 0 if it's not present
-    time_1_enabled = datadict.get('time_1_end_read', 0)
+    time_1_enabled = datadict.get('time_1_begin_read', 0)
     
     # Check if bit 15 is set (this is the 16th bit, which means we need to check (1 << 15))
     if time_1_enabled & (1 << 15):
@@ -148,14 +150,14 @@ def value_function_time_slot_1_reverse_enabled(initval, descr, datadict):
         return "Disabled"
 
 def value_function_time_slot_1_reverse_mode(initval, descr, datadict):
-    # Get the value of 'time_1_end_read', defaulting to 0 if it's not present
-    time_1_end_read = datadict.get('time_1_end_read', 0)
+    # Get the value of 'time_1_begin_read', defaulting to 0 if it's not present
+    time_1_mode = datadict.get('time_1_begin_read', 0)
     
     # Check bit 14 first for "Grid First" (1 << 14)
-    if time_1_end_read & (1 << 14):
+    if time_1_mode & (1 << 14):
         return "Grid First"
     # Check bit 13 for "Battery First" (1 << 13)
-    elif time_1_end_read & (1 << 13):
+    elif time_1_mode & (1 << 13):
         return "Battery First"
     # Default case if neither bit 13 nor bit 14 is set
     else:
@@ -4499,8 +4501,8 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
     # TL-XH GEN3 load/battery/grid first priority 
     # Read out set value in register. Return in decimal - not pretty currently
     GrowattModbusSensorEntityDescription(
-        name = "Time 1 Start",
-        key = "time_1_start_read",
+        name = "Time 1 Begin (read)",
+        key = "time_1_begin_read",
         register = 3038, # TL-XH GEN3 load/battery/grid first priority
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
@@ -4508,7 +4510,17 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         #internal = True,
     ),
     GrowattModbusSensorEntityDescription(
-        name = "Time 1 End",
+        name = "Time 1 Begin",
+        key = "time_1_begin",
+        value_function = value_function_time_slot_1_reverse_begin,
+        scale = value_function_growatt_gen4time,
+        allowedtypes = GEN3 | HYBRID,
+        entity_registry_enabled_default = False,
+        entity_category = EntityCategory.DIAGNOSTIC,
+        #internal = True,
+    ),  
+    GrowattModbusSensorEntityDescription(
+        name = "Time 1 End (read)",
         key = "time_1_end_read",
         register = 3039, #TL-XH GEN3 load/battery/grid first priority
         allowedtypes = GEN3 | HYBRID,
@@ -4519,7 +4531,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
     GrowattModbusSensorEntityDescription(
         name = "Time 1 End",
         key = "time_1_end",
-        value_function = value_function_time_slot_1_reverse_end
+        value_function = value_function_time_slot_1_reverse_end,
         scale = value_function_growatt_gen4time,
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
