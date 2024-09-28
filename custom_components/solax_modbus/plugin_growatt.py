@@ -134,14 +134,14 @@ def value_function_growatt_gen4time(initval, descr, datadict):
     return f"{hours:02}:{minutes:02}"
 
 def value_function_time_slot_1_reverse_begin(initval, descr, datadict):
-    #initval = datadict.get('time_1_begin_read', 0)
+    initval = datadict.get('time_1_begin_read', 0)
     initval = initval & 0x1FFF # Remove bits 13-15 using a bitwise AND with 0x1FFF
     hours = initval // 256  # Integer division to get the hours
     minutes = initval % 256  # Modulo to get the minutes
     return f"{hours:02}:{minutes:02}"
 
 def value_function_time_slot_1_reverse_end(initval, descr, datadict):
-    #initval = datadict.get('time_1_end_read', 0)
+    initval = datadict.get('time_1_end_read', 0)
     hours = initval // 256  # Integer division to get the hours
     minutes = initval % 256  # Modulo to get the minutes
     return f"{hours:02}:{minutes:02}"
@@ -4508,7 +4508,6 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         name = "Time 1 Begin (read)",
         key = "time_1_begin_read",
         register = 3038, # TL-XH GEN3 load/battery/grid first priority
-        scale = value_function_time_slot_1_reverse_begin,
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
@@ -4517,8 +4516,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
     GrowattModbusSensorEntityDescription(
         name = "Time 1 Begin",
         key = "time_1_begin",
-        register = 3038,
-        scale = value_function_time_slot_1_reverse_begin,
+        value_function = value_function_time_slot_1_reverse_begin,
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
@@ -4528,7 +4526,6 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         name = "Time 1 End (read)",
         key = "time_1_end_read",
         register = 3039, #TL-XH GEN3 load/battery/grid first priority
-        #scale = value_function_growatt_gen4time,
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
@@ -4537,31 +4534,30 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
     GrowattModbusSensorEntityDescription(
         name = "Time 1 End",
         key = "time_1_end",
-        register = 3039,
-        scale = value_function_growatt_gen4time,
+        value_function = value_function_time_slot_1_reverse_end,
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
         #internal = True,
     ),  
-    #GrowattModbusSensorEntityDescription(
-    #    name = "Time 1 Mode",
-    #    key = "time_1_mode",
-    #    value_function = value_function_time_slot_1_reverse_mode,
-    #    allowedtypes = GEN3 | HYBRID,
-    #    entity_registry_enabled_default = False,
-    #    entity_category = EntityCategory.DIAGNOSTIC,
-    #    #internal = True,
-    #),  
-    #GrowattModbusSensorEntityDescription(
-    #    name = "Time 1 Enabled",
-    #    key = "time_1_enabled",
-    #    value_function = value_function_time_slot_1_reverse_enabled,
-    #    allowedtypes = GEN3 | HYBRID,
-    #    entity_registry_enabled_default = False,
-    #    entity_category = EntityCategory.DIAGNOSTIC,
-    #    #internal = True,
-    #),
+    GrowattModbusSensorEntityDescription(
+        name = "Time 1 Mode",
+        key = "time_1_mode",
+        value_function = value_function_time_slot_1_reverse_mode,
+        allowedtypes = GEN3 | HYBRID,
+        entity_registry_enabled_default = False,
+        entity_category = EntityCategory.DIAGNOSTIC,
+        #internal = True,
+    ),  
+    GrowattModbusSensorEntityDescription(
+        name = "Time 1 Enabled",
+        key = "time_1_enabled",
+        value_function = value_function_time_slot_1_reverse_enabled,
+        allowedtypes = GEN3 | HYBRID,
+        entity_registry_enabled_default = False,
+        entity_category = EntityCategory.DIAGNOSTIC,
+        #internal = True,
+    ),
     #####
     #
     # SPF
