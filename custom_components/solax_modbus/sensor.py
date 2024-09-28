@@ -311,6 +311,7 @@ class SolaXModbusSensor(SensorEntity):
     @property
     def native_value(self):
         """Return the state of the sensor."""
+        _LOGGER.debug(f"DEBUG SENSOR: update_state {self.entity_description.key} : {self._hub.data.get(self.entity_description.key,'None')}")
         if self.entity_description.key in self._hub.data:
             try:    val = self._hub.data[self.entity_description.key]*self.entity_description.read_scale # a bit ugly as we might multiply strings or other types with 1
             except: val = self._hub.data[self.entity_description.key] # not a number
