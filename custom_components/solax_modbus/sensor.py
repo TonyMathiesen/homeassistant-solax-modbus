@@ -313,7 +313,10 @@ class SolaXModbusSensor(SensorEntity):
     def native_value(self):
         # If prevent_update is set on select, then use temporary value until time expired
         if self._hub.tmpdata_expiry.get(self.entity_description.key, 0) > time():
+            _LOGGER.debug(f"DEBUG SENSOR: EXPIRE data er der.. update_state {self.entity_description.key} : {self._hub.tmpdata.get(self.entity_description.key,'None')}")
             return self._hub.tmpdata.get(self.entity_description.key, None)
+        else:
+            _LOGGER.debug(f"DEBUG SENSOR: EXPIRE data er IKKE der.. update_state {self.entity_description.key} : {self._hub.data.get(self.entity_description.key,'None')}")
         
         """Return the state of the sensor."""
         if self.entity_description.key in self._hub.data:
