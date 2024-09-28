@@ -84,6 +84,7 @@ class SolaXModbusSelect(SelectEntity):
                 # Retrieve value from temporary data
                 val = self._hub.tmpdata.get(descr.key, None)
                 _LOGGER.debug(f"DEBUG tmpdata for {descr.key}: {val}")
+                _LOGGER.debug(f"DEBUG tmpdata for {descr.key}: {self._hub.data[self._key]}")
                 
                 if val is None:
                     _LOGGER.warning(f"cannot find tmpdata for {descr.key} - returning default option")
