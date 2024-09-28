@@ -203,6 +203,7 @@ class BaseModbusSelectEntityDescription(SelectEntityDescription):
     write_method: int = WRITE_SINGLE_MODBUS # WRITE_SINGLE_MOBUS or WRITE_MULTI_MODBUS or WRITE_DATA_LOCAL
     initvalue: int = None # initial default value for WRITE_DATA_LOCAL entities
     unit: int = None #  optional for WRITE_DATA_LOCAL e.g REGISTER_U16, REGISTER_S32 ...
+    prevent_update: bool = False # if set to True, value will not be re-read/updated with each polling cycle; only when read value changes
 
 @dataclass
 class BaseModbusNumberEntityDescription(NumberEntityDescription):
