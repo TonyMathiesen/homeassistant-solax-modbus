@@ -147,11 +147,9 @@ def value_function_time_slot_1_reverse_end(initval, descr, datadict):
     return f"{hours:02}:{minutes:02}"
 
 def value_function_time_slot_1_reverse_enabled(initval, descr, datadict):
-    # Get the value of 'time_1_end_read', defaulting to 0 if it's not present
     time_1_enabled = datadict.get('time_1_begin_read', 0)
     
-    # Check if bit 15 is set (this is the 16th bit, which means we need to check (1 << 15))
-    if time_1_enabled & (1 << 15):
+    if int(time_1_enabled) & (1 << 15): # Check if bit 15 is set (this is the 16th bit, which means we need to check (1 << 15))
         return "Enabled"
     else:
         return "Disabled"
@@ -159,15 +157,11 @@ def value_function_time_slot_1_reverse_enabled(initval, descr, datadict):
 def value_function_time_slot_1_reverse_mode(initval, descr, datadict):
     # Get the value of 'time_1_begin_read', defaulting to 0 if it's not present
     time_1_mode = datadict.get('time_1_begin_read', 0)
-    
-    # Check bit 14 first for "Grid First" (1 << 14)
-    if time_1_mode & (1 << 14):
+    if int(time_1_mode) & (1 << 14): # Check bit 14 first for "Grid First" (1 << 14)
         return "Grid First"
-    # Check bit 13 for "Battery First" (1 << 13)
-    elif time_1_mode & (1 << 13):
+    elif int(time_1_mode ) & (1 << 13): # Check bit 13 for "Battery First" (1 << 13)
         return "Battery First"
-    # Default case if neither bit 13 nor bit 14 is set
-    else:
+    else: # Default case if neither bit 13 nor bit 14 is set
         return "Load First"
 
 def value_function_today_s_solar_energy(initval, descr, datadict):
