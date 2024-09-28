@@ -84,8 +84,9 @@ class SolaXModbusSelect(SelectEntity):
                 # Retrieve value from temporary data
                 #val = self._hub.tmpdata.get(descr.key, None)
                 val = self._hub.tmpdata.get(descr.key, None)
+                option = self._hub.tmpdata.get(descr.option, None)
                 _LOGGER.debug(f"DEBUG tmpdata for {descr.key}: {val}")
-                _LOGGER.debug(f"DEBUG tmpdata for {descr.key}: {self._hub.data[self._key]}")
+                _LOGGER.debug(f"DEBUG tmpdata for {descr.key}: {option}")
                 
                 if val is None:
                     _LOGGER.warning(f"cannot find tmpdata for {descr.key} - returning default option")
@@ -133,6 +134,7 @@ class SolaXModbusSelect(SelectEntity):
             _LOGGER.info(f"*** local data written {self._key}: {payload}")
             if self.entity_description.prevent_update: # if corresponding_sensor: # only if corresponding sensor has prevent_update=True
                 self._hub.tmpdata[self.entity_description.key] = payload
+                self._hub.tmpdata[self.entity_description.option] = option
                 self._hub.tmpdata_expiry[self.entity_description.key] = time() + TMPDATA_EXPIRY
             self._hub.localsUpdated = True # mark to save permanently
         self._hub.data[self._key] = option
