@@ -82,7 +82,8 @@ class SolaXModbusSelect(SelectEntity):
                 # Retrieve option from temporary data
                 option = self._hub.tmpdata.get(descr.key, None)                
                 if option is None:
-                    _LOGGER.warning(f"cannot find tmpdata for {descr.key} - allow update despite prevent_update")
+                    _LOGGER.warning(f"cannot find tmpdata for {descr.key}")
+                return option
             else:  # If the temporary data has expired
                 if self._hub.tmpdata_expiry.get(descr.key, 0) > 0:
                     self._hub.localsUpdated = True  # Mark for local update once
