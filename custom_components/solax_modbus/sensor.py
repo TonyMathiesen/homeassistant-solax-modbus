@@ -314,7 +314,8 @@ class SolaXModbusSensor(SensorEntity):
         # If prevent_update is set on select, then use temporary value until time expired
         if self._hub.tmpdata_expiry.get(self.entity_description.key, 0) > time():
             _LOGGER.debug(f"DEBUG SENSOR: EXPIRE data er der.. update_state {self.entity_description.key} : {self._hub.tmpdata.get(self.entity_description.key,'None')}")
-            return self._hub.tmpdata.get(self.entity_description.key, None)
+            val = self._hub.tmpdata.get(self.entity_description.key, None)
+            return val
 
         #_LOGGER.debug(f"DEBUG SENSOR: EXPIRE data er IKKE der.. update_state {self.entity_description.key} : {self._hub.data.get(self.entity_description.key,'None')}")
 
@@ -324,5 +325,5 @@ class SolaXModbusSensor(SensorEntity):
         if self.entity_description.key in self._hub.data:
             try:    val = self._hub.data[self.entity_description.key]*self.entity_description.read_scale # a bit ugly as we might multiply strings or other types with 1
             except: val = self._hub.data[self.entity_description.key] # not a number
-            #_LOGGER.debug(f"DEBUG SENSOR: State {self.entity_description.key} : {val}")
+            _LOGGER.debug(f"DEBUG SENSOR: State {self.entity_description.key} : {val}")
             return val
