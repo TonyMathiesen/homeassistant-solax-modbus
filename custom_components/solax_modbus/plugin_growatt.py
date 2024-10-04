@@ -926,6 +926,7 @@ SELECT_TYPES = [
         unit = REGISTER_U16,
         allowedtypes = HYBRID | GEN3,
         entity_category = EntityCategory.CONFIG,
+        entity_registry_enabled_default = False,
         icon = "mdi:battery-clock",
     ),
     GrowattModbusSelectEntityDescription(
@@ -936,6 +937,7 @@ SELECT_TYPES = [
         unit = REGISTER_U16,
         allowedtypes = HYBRID | GEN3,
         entity_category = EntityCategory.CONFIG,
+        entity_registry_enabled_default = False,
         icon = "mdi:battery-clock",
     ),
     GrowattModbusSelectEntityDescription(
@@ -949,6 +951,7 @@ SELECT_TYPES = [
         write_method = WRITE_DATA_LOCAL,
         allowedtypes = HYBRID | GEN3,
         entity_category = EntityCategory.CONFIG,
+        entity_registry_enabled_default = False,
         icon = "mdi:battery-clock",
     ),
     GrowattModbusSelectEntityDescription(
@@ -961,6 +964,7 @@ SELECT_TYPES = [
         write_method = WRITE_DATA_LOCAL,
         allowedtypes = HYBRID | GEN3,
         entity_category = EntityCategory.CONFIG,
+        entity_registry_enabled_default = False,
         icon = "mdi:battery-clock",
     ),
     ###
