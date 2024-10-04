@@ -4587,6 +4587,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
+        internal = True, 
     ),  
     GrowattModbusSensorEntityDescription(
         name = "Time 1 Mode",
