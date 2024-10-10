@@ -121,7 +121,7 @@ class SolaXModbusSelect(SelectEntity):
             await self._hub.async_write_register(unit=self._modbus_addr, address=self._register, payload=payload)
         elif self._write_method == WRITE_DATA_LOCAL:
             _LOGGER.info(f"*** local data written {self._key}: {payload}")
-            if self.entity_description.prevent_update: # if corresponding_sensor: # only if corresponding sensor has prevent_update=True
+            if self.entity_description.prevent_update: 
                 self._hub.tmpdata[self.entity_description.key] = option
                 self._hub.tmpdata_expiry[self.entity_description.key] = time() + TMPDATA_EXPIRY
             self._hub.localsUpdated = True # mark to save permanently
