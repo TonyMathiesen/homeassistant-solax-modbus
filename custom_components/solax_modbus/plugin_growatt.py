@@ -4507,21 +4507,18 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
     ),  
     GrowattModbusSensorEntityDescription(
         key = "time_1_begin",
-        #register = 3038,
         value_function = value_function_time_slot_1_reverse_begin,
         allowedtypes = GEN3 | HYBRID,
         internal = True,
     ),  
     GrowattModbusSensorEntityDescription(
         key = "time_1_mode",
-        #register = 3038,
         value_function = value_function_time_slot_1_reverse_mode,
         allowedtypes = GEN3 | HYBRID,
         internal = True,
     ),  
     GrowattModbusSensorEntityDescription(
         key = "time_1_enabled",
-        #register = 3038,
         value_function = value_function_time_slot_1_reverse_enabled,
         allowedtypes = GEN3 | HYBRID,
         internal = True,
