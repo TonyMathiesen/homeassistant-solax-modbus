@@ -933,6 +933,7 @@ SELECT_TYPES = [
         name = "Time 1 End",
         key = "time_1_end",
         option_dict = TIME_OPTIONS_GEN4,
+        prevent_update = True,
         write_method = WRITE_DATA_LOCAL,
         unit = REGISTER_U16,
         allowedtypes = HYBRID | GEN3,
