@@ -124,6 +124,7 @@ class SolaXModbusSelect(SelectEntity):
             if self.entity_description.prevent_update: 
                 self._hub.tmpdata[self.entity_description.key] = option
                 self._hub.tmpdata_expiry[self.entity_description.key] = time() + TMPDATA_EXPIRY
-            self._hub.localsUpdated = True # mark to save permanently
+            else:
+                self._hub.localsUpdated = True # mark to save permanently
         self._hub.data[self._key] = option
         self.async_write_ha_state()
