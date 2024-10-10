@@ -134,7 +134,6 @@ def value_function_growatt_gen4time(initval, descr, datadict):
     return f"{hours:02}:{minutes:02}"
 
 def value_function_time_slot_1_reverse_begin(initval, descr, datadict):
-    #initval = datadict.get('register_3038_read', 0) # need to use a read entity to avoid overwriting the select
     initval = initval & 0x1FFF # Remove bits 13-15 using a bitwise AND with 0x1FFF
     hours = initval // 256  # Integer division to get the hours
     minutes = initval % 256  # Modulo to get the minutes
@@ -4500,37 +4499,25 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
     ),
     # TL-XH GEN3 load/battery/grid first priority 
     GrowattModbusSensorEntityDescription(
-        key = "register_3038_read",
-        register = 3038, # TL-XH GEN3 load/battery/grid first priority
-        allowedtypes = GEN3 | HYBRID,
-        internal = True,
-    ),
-    GrowattModbusSensorEntityDescription(
-        name = "Time 1 Begin (read)",
         key = "time_1_begin",
         register = 3038,
         scale = value_function_time_slot_1_reverse_begin,
         allowedtypes = GEN3 | HYBRID,
-        entity_registry_enabled_default = False,
-        entity_category = EntityCategory.DIAGNOSTIC,
+        internal = True,
     ),  
     GrowattModbusSensorEntityDescription(
-        name = "Time 1 Mode (read)",
         key = "time_1_mode",
         register = 3038,
         scale = value_function_time_slot_1_reverse_mode,
         allowedtypes = GEN3 | HYBRID,
-        entity_registry_enabled_default = False,
-        entity_category = EntityCategory.DIAGNOSTIC,
+        internal = True,
     ),  
     GrowattModbusSensorEntityDescription(
-        name = "Time 1 Enabled (read)",
         key = "time_1_enabled",
         register = 3038,
         scale = value_function_time_slot_1_reverse_enabled,
         allowedtypes = GEN3 | HYBRID,
-        entity_registry_enabled_default = False,
-        entity_category = EntityCategory.DIAGNOSTIC,
+        internal = True,
     ),
     GrowattModbusSensorEntityDescription(
         key = "time_1_end",
