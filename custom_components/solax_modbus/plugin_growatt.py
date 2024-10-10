@@ -134,20 +134,21 @@ def value_function_growatt_gen4time(initval, descr, datadict):
     return f"{hours:02}:{minutes:02}"
 
 def value_function_time_slot_1_reverse_begin(initval, descr, datadict):
+    initval = datadict.get('register_3038_read', 0) # need to use a read entity to avoid overwriting the select
     initval = initval & 0x1FFF # Remove bits 13-15 using a bitwise AND with 0x1FFF
     hours = initval // 256  # Integer division to get the hours
     minutes = initval % 256  # Modulo to get the minutes
     return f"{hours:02}:{minutes:02}"
 
 def value_function_time_slot_1_reverse_enabled(initval, descr, datadict):
-    time_1_enabled = initval
+    time_1_enabled = datadict.get('register_3038_read', 0) # need to use a read entity to avoid overwriting the select
     if int(time_1_enabled) & (1 << 15): # Check if bit 15 is set 
         return "Enabled"
     else:
         return "Disabled"
 
 def value_function_time_slot_1_reverse_mode(initval, descr, datadict):
-    time_1_mode = initval
+    time_1_mode = datadict.get('register_3038_read', 0) # need to use a read entity to avoid overwriting the select
     if int(time_1_mode) & (1 << 14): # Check bit 14 first for "Grid First" (1 << 14)
         return "Grid First"
     elif int(time_1_mode ) & (1 << 13): # Check bit 13 for "Battery First" (1 << 13)
@@ -4499,23 +4500,29 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
     ),
     # TL-XH GEN3 load/battery/grid first priority 
     GrowattModbusSensorEntityDescription(
-        key = "time_1_begin",
+        key = "register_3038",
         register = 3038,
-        scale = value_function_time_slot_1_reverse_begin,
+        allowedtypes = GEN3 | HYBRID,
+        internal = True,
+    ),  
+    GrowattModbusSensorEntityDescription(
+        key = "time_1_begin",
+        #register = 3038,
+        value_function = value_function_time_slot_1_reverse_begin,
         allowedtypes = GEN3 | HYBRID,
         internal = True,
     ),  
     GrowattModbusSensorEntityDescription(
         key = "time_1_mode",
-        register = 3038,
-        scale = value_function_time_slot_1_reverse_mode,
+        #register = 3038,
+        value_function = value_function_time_slot_1_reverse_mode,
         allowedtypes = GEN3 | HYBRID,
         internal = True,
     ),  
     GrowattModbusSensorEntityDescription(
         key = "time_1_enabled",
-        register = 3038,
-        scale = value_function_time_slot_1_reverse_enabled,
+        #register = 3038,
+        value_function = value_function_time_slot_1_reverse_enabled,
         allowedtypes = GEN3 | HYBRID,
         internal = True,
     ),
