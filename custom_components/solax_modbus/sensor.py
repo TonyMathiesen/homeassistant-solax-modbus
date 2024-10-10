@@ -7,6 +7,7 @@ from typing import Optional, Dict, Any, List
 from types  import SimpleNamespace
 from dataclasses import dataclass, replace
 from copy import copy
+from time import time
 import homeassistant.util.dt as dt_util
 
 from .const import ATTR_MANUFACTURER, DOMAIN, SLEEPMODE_NONE, SLEEPMODE_ZERO
