@@ -4504,7 +4504,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
     ),
     GrowattModbusSensorEntityDescription(
         name = "Time 1 Begin (read)",
-        key = "time_1_begin_read",
+        key = "time_1_begin",
         value_function = value_function_time_slot_1_reverse_begin,
         allowedtypes = GEN3 | HYBRID,
         entity_registry_enabled_default = False,
@@ -4521,7 +4521,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
     #),  
     GrowattModbusSensorEntityDescription(
         key = "time_1_end",
-        scale = value_function_growatt_gen4time,
+        value_function = value_function_growatt_gen4time,
         allowedtypes = GEN3 | HYBRID,
         internal = True,
     ),  
