@@ -4370,7 +4370,9 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         state_class = SensorStateClass.MEASUREMENT,
         register = 3023,
         register_type = REG_INPUT,
-        unit = REGISTER_U32,
+        unit = REGISTER_S32,
+        scale = 0.1,
+        rounding = 1,
         allowedtypes = GEN4 | X3,
     ),
     GrowattModbusSensorEntityDescription(
@@ -5274,6 +5276,7 @@ SENSOR_TYPES: list[GrowattModbusSensorEntityDescription] = [
         entity_registry_enabled_default = False,
         entity_category = EntityCategory.DIAGNOSTIC,
     ),
+  
     #####
     #
     # SPF
